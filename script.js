@@ -12,7 +12,7 @@ const questionSprite = new Image();
 yoshiSprite.src = 'https://www.pngall.com/wp-content/uploads/11/Yoshi-PNG-Images.png';
 goombaSprite.src = 'https://www.pngmart.com/files/23/Goomba-PNG-Photo.png';
 brickSprite.src = 'https://freepngimg.com/thumb/brick/90535-mario-square-super-bros-brown-free-photo-png.png';
-questionSprite.src = 'https://www.vhv.rs/dpng/d/132-1329592_super-mario-question-block-hd-png-download.png';
+questionSprite.src = 'https://melonds.kuribo64.net/board/userpic/397_1573947385.png';
 
 yoshiSprite.onload = goombaSprite.onload = brickSprite.onload = questionSprite.onload = checkAssetsLoaded;
 
@@ -92,7 +92,7 @@ function update() {
   gameRunning = true; 
 
   if (keys['ArrowRight'] || keys['KeyD']) player.vX = player.speed;
-  else if (keys['ArrowLeft'] || keys['KeyA']) player.vX = -speed;
+  else if (keys['ArrowLeft'] || keys['KeyA']) player.vX = -player.speed;
   else player.vX *= 0.8;
 
   player.vY += gravity;
