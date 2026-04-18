@@ -144,40 +144,49 @@ function update() {
        */
 
       // --- PART A: THE FLOOR (Given) ---
-      if (player.vY > 0 && player.y + player.h < p.y + 20) {
-        player.y = p.y - player.h - 0.1;
-        player.vY = 0;
-        player.grounded = true;
-      }
+if (player.vY > 0 && player.y + player.h < p.y + 20) {
+  player.y = p.y - player.h - 0.1;
+  player.vY = 0;
+  player.grounded = true;
+}
 
-      // --- PART B: THE HEAD-BUTT (Your Turn!) ---
-      if (player.vY < 0 && player.y > p.y) {
-        // TODO: Bounce down (vY = 2) and delete [?] blocks (splice)
-      }
-      
-      // --- PART C: GHOST WALLS (Your Turn!) ---
-      if (player.vX > 0 && player.x + player.w < p.x + 10 
-          && player.y + player.h > p.y + 5) { // Feet buffer
-        // TODO: Add the 'Ghost Head' check and stop Yoshi (vX = 0)
-      } 
-      else if (player.vX < 0 && player.x > p.x + p.w - 10 
-          && player.y + player.h > p.y + 5) {
-        // TODO: Add the 'Ghost Head' check and stop Yoshi (vX = 0)
-      }
-    }
-  });
+// --- PART B: THE HEAD-BUTT ---
+if (player.vY < 0 && player.y > p.y) {
+  // Bounce down
+  player.vY = 2;
 
-  if ((keys['Space'] || keys['ArrowUp'] || keys['KeyW']) && player.grounded) {
-    player.vY = -player.jump;
+  // Delete item blocks
+  if (p.type === "item") {
+    platforms.splice(i, 1);
+    score += 50;
   }
+}
 
-  enemies.forEach(en => {
-    if (!en.alive) return;
-    en.x += en.speed;
-    if (en.x < 0 || en.x > canvas.width - en.w) en.speed *= -1;
+// --- PART C: GHOST WALLS (RIGHT) ---
+if (
+  player.vX > 0 &&
+  player.x + player.w < p.x + 10 &&
+  player.y + player.h > p.y + 5 &&              // Feet buffer
+  player.y < p.y + tileSize - 15                // 👈 Ghost head check
+) {
+  player.vX = 0;
 
-    if (getCollision(player, en)) {
-      /**
+  // Snap to edge (avoid sticking)
+  player.x = p.x - player.w;
+}
+
+// --- PART C: GHOST WALLS (LEFT) ---
+else if (
+  player.vX < 0 &&
+  player.x > p.x + p.w - 10 &&
+  player.y + player.h > p.y + 5 &&              // Feet buffer
+  player.y < p.y + tileSize - 15                // 👈 Ghost head check
+) {
+  player.vX = 0;
+
+  // Snap to edge
+  player.x = p.x + p.w;
+}
        * CHALLENGE 5: STOMP OR DIE
        */
       // TODO: Logic for falling on top of enemy vs hitting from the side
