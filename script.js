@@ -129,8 +129,10 @@ function update() {
    */
   if (player.y > canvas.height) {
     // TODO: Set player.dead and show overlay
+    player.dead = true;
+    document.getElementById('overlay').style.display = 'flex';
   }
-
+    
   platforms.forEach((p, i) => {
     if (getCollision(player, p)) {
       
