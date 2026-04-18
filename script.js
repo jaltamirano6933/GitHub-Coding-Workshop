@@ -144,23 +144,23 @@ function update() {
        */
 
       // --- PART A: THE FLOOR (Given) ---
-if (player.vY > 0 && player.y + player.h < p.y + 20) {
-  player.y = p.y - player.h - 0.1;
-  player.vY = 0;
-  player.grounded = true;
-}
+      if (player.vY > 0 && player.y + player.h < p.y + 20) {
+        player.y = p.y - player.h - 0.1;
+        player.vY = 0;
+        player.grounded = true;
+      }
 
 // --- PART B: THE HEAD-BUTT ---
-if (player.vY < 0 && player.y > p.y) {
-  // Bounce down
-  player.vY = 2;
+  if (player.vY < 0 && player.y > p.y) {
+    // Bounce down
+    player.vY = 2;
 
-  // Delete item blocks
-  if (p.type === "item") {
-    platforms.splice(i, 1);
-    score += 50;
+    // Delete item blocks
+    if (p.type === "item") {
+      platforms.splice(i, 1);
+      score += 50;
+    }
   }
-}
 
 // --- PART C: GHOST WALLS (RIGHT) ---
 if (
@@ -187,11 +187,42 @@ else if (
   // Snap to edge
   player.x = p.x + p.w;
 }
-       * CHALLENGE 5: STOMP OR DIE
-       */
+  }
+});
+
+  /*CHALLENGE 5: STOMP OR DIE*
       // TODO: Logic for falling on top of enemy vs hitting from the side
+    enemies.forEach(en => {
+  if (!en.alive) return;
+
+  en.x += en.speed;
+  if (en.x < 0 || en.x > canvas.width - en.w) en.speed *= -1;
+
+  if (getCollision(player, en)) {
+
+    // 🟢 STOMP (falling + above enemy)
+    const isFalling = player.vY > 0;
+    const isAbove = player.y + player.h - 5 < en.y;
+
+    if (isFalling && isAbove) {
+      en.alive = false;
+
+      // Bounce
+      player.vY = -player.jump * 0.7;
+
+      // Score
+      score += 100;
+
+      return; // 🔥 VERY IMPORTANT (stop further checks)
     }
-  });
+
+    // 🔴 SIDE HIT
+    player.x = 50;
+    player.y = 0;
+    player.vX = 0;
+    player.vY = 0;
+  }
+});
 
   /**
    * CHALLENGE 6: THE NEXT LEVEL
