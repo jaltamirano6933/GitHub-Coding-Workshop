@@ -263,3 +263,73 @@ window.onkeydown = (e) => {
   }
 };
 window.onkeyup = (e) => keys[e.code] = false;
+/* CHALLENGE 6: THE NEXT LEVEL */
+goals.forEach(g => {
+  if (getCollision(player, g)) {
+
+    // avanzar al siguiente nivel
+    currentLevel++;
+
+    // cargar nuevo nivel
+    loadLevel(currentLevel);
+
+    // reset básico del jugador (evita bugs de movimiento)
+    player.vX = 0;
+    player.vY = 0;
+
+    return; // 🔥 importante: evita múltiples triggers en el mismo frame
+  }
+});
+
+draw();
+requestAnimationFrame(update);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  platforms.forEach(p => {
+    let img = p.type === 'item' ? questionSprite : brickSprite;
+    ctx.drawImage(img, p.x, p.y, tileSize, tileSize);
+  });
+
+  enemies.forEach(en => {
+    if (en.alive) {
+      ctx.drawImage(goombaSprite, en.x, en.y, en.w, en.h);
+    }
+  });
+
+  // goals (zona de meta)
+  ctx.fillStyle = "rgba(255, 255, 255, 0.3)";
+  goals.forEach(g => {
+    ctx.fillRect(g.x, g.y, g.w, g.h);
+  });
+
+  ctx.save();
+
+  // dirección del jugador
+  if (player.vX < -0.1) {
+    ctx.translate(player.x + player.w, player.y);
+    ctx.scale(-1, 1);
+    ctx.drawImage(yoshiSprite, 0, 0, player.w, player.h);
+  } else {
+    ctx.drawImage(yoshiSprite, player.x, player.y, player.w, player.h);
+  }
+
+  ctx.restore();
+}
+
+// controles
+window.onkeydown = (e) => {
+  keys[e.code] = true;
+
+  // reiniciar si está muerto
+  if ((e.key === 'r' || e.key === 'R') && player.dead) {
+    loadLevel(currentLevel);
+    if (!gameRunning) update();
+  }
+};
+
+window.onkeyup = (e) => {
+  keys[e.code] = false;
+};
